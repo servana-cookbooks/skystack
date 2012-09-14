@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-execute "#{node.to_json} > #{node['skystack']['log_path']}"
+execute "echo #{node.to_json} > #{node['skystack']['log_path']}/node.json"
 
 require 'ohai'
  o = Ohai::System.new
