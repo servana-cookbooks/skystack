@@ -4,7 +4,7 @@ module SkyStack
       def db
         Gem.clear_paths
         require 'mysql2'
-        @@db ||= ::Mysql.new new_resource.host, new_resource.root_username, new_resource.root_password
+        @@db ||= ::Mysql2.new new_resource.host, new_resource.root_username, new_resource.root_password
       end
     end
   end

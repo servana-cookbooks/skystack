@@ -17,11 +17,6 @@
 #
 
 
-gem_package "mysql" do
-  action :remove
-  ignore_failure true
-end
-
 gem_package "mysql2" do
   action :install
   ignore_failure true
