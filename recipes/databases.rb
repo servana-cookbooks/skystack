@@ -16,6 +16,10 @@
 # limitations under the License.
 #
 
+gem_package "mysql" do
+  action :install
+  ignore_failure true
+end
 
 node["databases"].each do |db|
   
