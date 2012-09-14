@@ -21,7 +21,7 @@ require 'ohai'
  o.all_plugins
  total_memory = o[:memory][:total].tr('kb','').to_i()
  free_memory = o[:memory][:free].tr('kb','').to_i()
- 
+
  size = case total_memory
   when total_memory < 630000 then 0.5
   when total_memory < 1048576 then 1
@@ -47,6 +47,6 @@ if ! node['firewall'].nil?
 	include_recipe "skystack::firewall"
 end
 
-if node['scripts'].is_a?
+if ! node['scripts'].nil?
 	include_recipe "skystack::scripts"
 end
