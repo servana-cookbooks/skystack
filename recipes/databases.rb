@@ -1,6 +1,5 @@
-#
 # Cookbook Name:: skystack
-# Recipe:: php
+# Recipe:: skystack::databases
 #
 # Copyright 2010, Skystack, Ltd.
 #
@@ -18,20 +17,17 @@
 #
 
 
-
-include_recipe "php::php5"
-include_recipe "php::php5-cgi"
-
-apache_module "php5" do
-  enable false
-end
-
-node['skystack_php'].each do |php|
-  php["add_extensions"].each do |value|
-
-   if !value.nil?
-     include_recipe "php::module_#{value}"
+node["databases"].each do |db|
+  
+   mysql_database "create_#{db["name"]}" do
+      root_username "root"
+      root_password node['mysql']['server_root_password']
+      database db["name"]
+      username db["user"]
+      password db["password"]
+      host "localhost"
+      priv "#{db["permissions"].join(",")}"
+      action [:create, :grant, :flush]
    end
-   
-  end
+    
 end
