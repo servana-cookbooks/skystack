@@ -1,4 +1,4 @@
-include Opscode::Mysql::Database
+include SkyStack::Mysql::Database
 
 action :create do
 #  if exists?

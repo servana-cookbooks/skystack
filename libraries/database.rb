@@ -1,4 +1,4 @@
-module Opscode
+module SkyStack
   module Mysql
     module Database
       def db

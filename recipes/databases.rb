@@ -19,7 +19,8 @@
 
 node["databases"].each do |db|
   
-   database "create_#{db["name"]}" do
+   skystack_database "create_#{db["name"]}" do
+      provider "skystack_mysql"
       root_username "root"
       root_password node['mysql']['server_root_password']
       database db["name"]
