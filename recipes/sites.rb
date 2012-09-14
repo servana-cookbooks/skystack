@@ -72,10 +72,16 @@ node["sites"].each do |site|
       enable false
     end
   end
- 
+  
+  service "#{site['webserver']}"
+   action :restart
+  end
+
 end
 
 Chef::Log.info "skystack::sites disabling default Apache site."
 apache_site "000-default" do
   enable false
 end
+
+
