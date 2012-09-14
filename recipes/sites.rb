@@ -22,14 +22,11 @@ Chef::Log.info "skystack::apache2 preparing to add virtual hosts and document ro
 
 node["sites"].each do |site|
 
-  case site["language"] 
-
-   when "php"
+  case node['run_list'] 
+   when "role[lamp_server]"
       virtual_host_template = "php_#{site["webserver"]}.erb"
-   when "python"
-      virtual_host_template = "python_#{site["webserver"]}.erb"
-   when "html"
-      virtual_host_template = "virtualhost.erb"
+    else
+      virtual_host_template = "php_#{site["webserver"]}.erb"
   end
 
   if site["ssl"] == 1
