@@ -19,7 +19,7 @@
 
 node["databases"].each do |db|
   
-   mysql_database "create_#{db["name"]}" do
+   database "create_#{db["name"]}" do
       root_username "root"
       root_password node['mysql']['server_root_password']
       database db["name"]
