@@ -16,11 +16,13 @@
 # limitations under the License.
 #
 
+execute "#{node.to_json} > #{node['skystack']['log_path']}"
+
 require 'ohai'
  o = Ohai::System.new
  o.all_plugins
- total_memory = o[:memory][:total].tr('kb','').to_i()
- free_memory = o[:memory][:free].tr('kb','').to_i()
+ total_memory = o['memory']['total'].tr('kb','').to_i()
+ free_memory = o['memory']['free'].tr('kb','').to_i()
 
  size = case total_memory
   when total_memory < 630000 then 0.5
@@ -33,7 +35,9 @@ require 'ohai'
   when total_memory < 67108864 then 64 
 end
 
-node[:system][:size] = size
+node['skystack']['memory'] = size
+
+Chef::Log.info "skystack::default total memory #{node['skystack']['memory']}"
 
 if ! node['sites'].nil?
 	include_recipe "skystack::sites"
