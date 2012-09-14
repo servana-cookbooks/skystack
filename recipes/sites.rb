@@ -24,9 +24,11 @@ node["sites"].each do |site|
 
   case node['run_list'] 
    when "role[lamp_server]"
-      virtual_host_template = "php_#{site["webserver"]}.erb"
+      virtual_host_template = "php_apache_virtualhost.erb"
+  when "role[lnmp_server]"
+      virtual_host_template = "php_nginx_virtualhost.erb"
     else
-      virtual_host_template = "php_#{site["webserver"]}.erb"
+      virtual_host_template = "php_#{site["webserver"]}_virtualhost.erb"
   end
 
   if site["ssl"] == 1
