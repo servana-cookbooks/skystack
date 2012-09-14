@@ -21,6 +21,7 @@ require 'ohai'
  o.all_plugins
  total_memory = o[:memory][:total].tr('kb','').to_i()
  free_memory = o[:memory][:free].tr('kb','').to_i()
+ 
  size = case total_memory
   when total_memory < 630000 then 0.5
   when total_memory < 1048576 then 1
@@ -33,8 +34,19 @@ require 'ohai'
 end
 
 node[:system][:size] = size
-node[:ss_server_fqdn] = node["ss_server_fqdn"]
-node[:ss_monitor_fqdn] = node["ss_monitor_fqdn"]
 
-require_recipe "apt"
-include_recipe "build-essential"
+if ! node['sites'].nil?
+	include_recipe "skystack::sites"
+end
+
+if ! node['databases'].nil?
+	include_recipe "skystack::databases"
+end
+
+if ! node['firewall'].nil?
+	include_recipe "skystack::firewall"
+end
+
+if node['scripts'].is_a?
+	include_recipe "skystack::scripts"
+end
