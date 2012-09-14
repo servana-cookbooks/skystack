@@ -72,10 +72,6 @@ node["sites"].each do |site|
       enable false
     end
   end
-  
-  service "#{site['webserver']}"
-   action :restart
-  end
 
 end
 
