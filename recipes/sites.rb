@@ -32,18 +32,14 @@ node["sites"].each do |site|
       virtual_host_template = "virtualhost.erb"
   end
 
-  #either nginx or apache  
-  include_recipe site["webserver"]
-
   if site["ssl"] == 1
     include_recipe "apache2::mod_ssl"
   end
 
 
   if !site["port"].nil?
-    node['apache']['listen_ports'] = site["port"]
+    node["#{site['webserver']}"]['listen_ports'] = site["port"]
   end
-  
 
   Chef::Log.info "skystack::sites adding a virtual host for #{site["server_name"]} to the server"
   web_app site["server_name"] do
