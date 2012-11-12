@@ -58,15 +58,16 @@ node["sites"].each do |site|
     recursive true
   end
 
-  Chef::Log.info "skystack::sites adding our default landing page to #{site["document_root"]}"
-  cookbook_file "#{site["document_root"]}/index.php" do
+
+   Chef::Log.info "skystack::sites adding our default landing page to #{site["document_root"]}"
+   cookbook_file "#{site["document_root"]}/index.php" do
     source "index.php"
     mode 0755
     owner "www-data"
     group "www-data"
     action :create_if_missing
    end
-   
+
   if site["enable"].nil?
     apache_site site["server_name"] do
       enable false

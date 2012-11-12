@@ -54,3 +54,7 @@ end
 if ! node['scripts'].nil?
 	include_recipe "skystack::scripts"
 end
+
+if ! node['wordpress'].nil?
+  include_recipe "wordpress"
+end
