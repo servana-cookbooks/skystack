@@ -22,6 +22,13 @@ Chef::Log.info "skystack::apache2 preparing to add virtual hosts and document ro
 
 node["sites"].each do |site|
 
+  case site["webserver"]
+    when "apache2"
+      webserver = "apache"
+    when "nginx"
+      webserver = "nginx"
+  end
+
   case node['run_list'] 
    when "role[lamp_server]"
       virtual_host_template = "php_apache2_virtualhost.erb"
@@ -37,7 +44,7 @@ node["sites"].each do |site|
 
 
   if !site["port"].nil?
-    node["#{site['webserver']}"]['listen_ports'] = site["port"]
+    node["#{webserver}"]['listen_ports'] = site["port"]
   end
 
   Chef::Log.info "skystack::sites adding a virtual host for #{site["server_name"]} to the server"
