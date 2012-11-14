@@ -35,7 +35,7 @@ require 'ohai'
   when total_memory < 67108864 then 64 
 end
 
-node['skystack']['memory'] = size
+node.set['skystack']['memory'] = size
 
 Chef::Log.info "skystack::default total memory #{node['skystack']['memory']}"
 

@@ -38,7 +38,7 @@ node["sites"].each do |site|
   end
 
   if !site["port"].nil?
-    node["#{webserver}"]['listen_ports'] = site["port"]
+    node.set["#{webserver}"]['listen_ports'] = site["port"]
   end
 
   Chef::Log.info "skystack::sites adding a virtual host for #{site["server_name"]} to the server"
@@ -74,6 +74,10 @@ node["sites"].each do |site|
       enable false
     end
   end
+  
+  service site['config']['webserver'] do
+    action :restart
+  end
 
 end
 
@@ -82,7 +86,5 @@ apache_site "000-default" do
   enable false
 end
 
-service site['config']['webserver'] do
-  action :restart
-end
+
 
