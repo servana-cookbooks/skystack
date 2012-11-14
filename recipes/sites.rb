@@ -69,7 +69,7 @@ node["sites"].each do |site|
     action :create_if_missing
    end
 
-  if site["enable"].nil?
+  if site['config']["enable"].nil?
     apache_site site["server_name"] do
       enable false
     end
