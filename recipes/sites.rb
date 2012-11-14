@@ -22,26 +22,20 @@ Chef::Log.info "skystack::apache2 preparing to add virtual hosts and document ro
 
 node["sites"].each do |site|
 
-  case site["webserver"]
-    when "apache2"
-      webserver = "apache"
-    when "nginx"
-      webserver = "nginx"
-  end
-
-  case node['run_list'] 
-   when "role[lamp_server]"
-      virtual_host_template = "php_apache2_virtualhost.erb"
-  when "role[lnmp_server]"
-      virtual_host_template = "php_nginx_virtualhost.erb"
-    else
-      virtual_host_template = "php_#{site["webserver"]}_virtualhost.erb"
+  if site['config']['webserver']
+    case site['config']['webserver']
+      when "apache2"
+        webserver = "apache"
+        virtual_host_template = "php_apache2_virtualhost.erb"
+      when "nginx"
+        webserver = "nginx"
+        virtual_host_template = "php_nginx_virtualhost.erb"
+    end
   end
 
   if site["ssl"] == 1
     include_recipe "apache2::mod_ssl"
   end
-
 
   if !site["port"].nil?
     node["#{webserver}"]['listen_ports'] = site["port"]
@@ -88,4 +82,7 @@ apache_site "000-default" do
   enable false
 end
 
+service site['config']['webserver'] do
+  action :restart
+end
 

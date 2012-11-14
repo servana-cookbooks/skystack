@@ -55,6 +55,17 @@ if ! node['scripts'].nil?
 	include_recipe "skystack::scripts"
 end
 
-if ! node['wordpress'].nil?
-  include_recipe "wordpress"
+node['run_list'].each do |run|
+
+  case run
+    when "role[wordpress_server]" then
+      include_recipe "wordpress"
+    when "role[drupal_server]" then
+    when "role[symphony_server]" then
+    when "role[cakephp_server]" then
+    when "role[symfony_server]" then
+    when "role[lithium_server]" then
+    when "role[magento_server]" then  
+  end
+
 end
