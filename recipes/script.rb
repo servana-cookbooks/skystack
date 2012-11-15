@@ -19,8 +19,9 @@
 script = node.run_state[:current_app]
 
 
-node["scripts"].each do |script|
+node["scripts"][node["scripts"]["position"]].each do |script|
   
+
   Chef::Log.info "skystack::script telling chef to run this script #{script["resource"]}"
   
   execute "run-script-#{script["resource"]}" do
