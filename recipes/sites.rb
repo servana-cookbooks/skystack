@@ -63,7 +63,12 @@ if site['application']
 
 app = site['application']
   
-  include_recipe "application"
+  case app['type']
+  when 'php' then
+     include_recipe "application_php"
+  else
+     include_recipe "application"
+  end
 
   application app['name'] do
     path app['path']
