@@ -22,13 +22,19 @@ if node['deploy']
 
 app = node['deploy']
 
+  if app['force']
+   deploy_action = app['force']
+  else
+   deploy_action = :deploy
+  end
+
   deploy_revision app['name'] do
     revision app['revision'][node.chef_environment]
     repository app['repository']
     user app['owner']
     group app['group']
     deploy_to app['path']
-    action app['force'][node.chef_environment] ? :force_deploy : :deploy
+    action deploy_action
     ssh_wrapper app['ssh_wrapper']
     shallow_clone true
     purge_before_symlink([])
