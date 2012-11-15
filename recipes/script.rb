@@ -44,7 +44,7 @@ node["scripts"].each do |script|
 
     HTTP=https
 
-    curl -k -o /tmp/#{script["resource"]}-raw -u $API_USER:$API_TOKEN $HTTP://$BASE/$ALIAS/scripts/#{script["identifier"]}/out.#{script["ext"]}}
+    curl -k -o /tmp/#{script["resource"]}-raw -u $API_USER:$API_TOKEN $HTTP://$BASE/$ALIAS/scripts/#{script["identifier"]}/out.bash
 
     tr -d '\015\032' < /tmp/#{script["resource"]}-raw > /tmp/#{script["resource"]}
 
