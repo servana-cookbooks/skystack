@@ -16,10 +16,7 @@
 # limitations under the License.
 #
 
-script = node.run_state[:current_app]
-
-
-node["scripts"][node["scripts"]["position"]].each do |script|
+node['scripts']['run_scripts'].each do |script|
   
 
   Chef::Log.info "skystack::script telling chef to run this script #{script["resource"]}"

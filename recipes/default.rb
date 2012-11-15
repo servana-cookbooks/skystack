@@ -39,8 +39,8 @@ node.set['skystack']['memory'] = size
 
 Chef::Log.info "skystack::default total memory #{node['skystack']['memory']}"
 
-if ! node['scripts']['before_configure'].nil?
-    node.set['scripts']['position'] = 'before_configure'
+if node['scripts'] && node['scripts']['before_configure'].is_a?
+    node.set['scripts']['run_scripts'] = node['scripts']['before_configure']
   include_recipe "skystack::script"
 end
 
@@ -56,7 +56,7 @@ if ! node['sites'].nil?
   include_recipe "skystack::sites"
 end
 
-if ! node['scripts']['after_configure'].nil?
-    node.set['scripts']['position'] = 'after_configure'
+if node['scripts'] && node['scripts']['after_configure'].is_a?
+    node.set['scripts']['run_scripts'] = node['scripts']['after_configure']
   include_recipe "skystack::script"
 end
