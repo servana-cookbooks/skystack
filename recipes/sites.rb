@@ -62,21 +62,13 @@ node["sites"].each do |site|
 if site['application']
 
 app = site['application']
-  
-  case app['type']
-  when 'php' then
-     #include_recipe "application_php"
-  else
-     #include_recipe "application"
-  end
 
-  application app['name'] do
-    path app['path']
-    repository app['repository']
-    revision app['revision']
-    ssh_wrapper app['ssh_wrapper']
-    deploy_key app['deploy_key']
-  end
+app['owner'] = 'www-data'
+app['group'] = 'www-data'
+
+
+node.set['deploy'] = app
+include_recipe 'skystack::deploy'
 
 end
 
