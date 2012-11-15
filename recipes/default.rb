@@ -52,5 +52,5 @@ if ! node['firewall'].nil?
 end
 
 if ! node['scripts'].nil?
-	include_recipe "skystack::scripts"
+	include_recipe "skystack::script"
 end
