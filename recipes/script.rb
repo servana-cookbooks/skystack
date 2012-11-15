@@ -20,33 +20,39 @@ script = node.run_state[:current_app]
 
 
 node["scripts"].each do |script|
-  Chef::Log.info "skystack::script telling chef to run this script #{script["skyscript_id"]}"
-  script["ext"] = File.extname(script["resource"])
-  execute "run_skyscript_#{script["skyscript_id"]}" do
-    command "/tmp/#{script["skyscript_id"]}#{script["ext"]};touch /opt/skystack/tmp/executed-#{script["skyscript_id"]}"
+  
+  Chef::Log.info "skystack::script telling chef to run this script #{script["resource"]}"
+  
+  execute "run-script-#{script["resource"]}" do
+    command "/tmp/#{script["resource"]}; touch /opt/skystack/tmp/executed-#{script["resource"]}"
     action :nothing
-    only_if do ! File.exists?( "/opt/skystack/tmp/executed-#{script["skyscript_id"]}" ) end
+    only_if do ! File.exists?( "/opt/skystack/tmp/executed-#{script["resource"]}" ) end
   end
+
   #all interactions with our API should be done via a Ruby script to cleanup the execution of a SkyScript.
-  Chef::Log.info "skystack::script via skystack we fetch the script contents #{script["skyscript_id"]}"
-  bash "get_skyscript" do
+  Chef::Log.info "skystack::script via skystack we fetch the script contents #{script["resource"]}"
+
+  bash "get-script" do
     interpreter "#{script["ext"].gsub(".", "")}"
     user "root"
     cwd "/tmp"
     code <<-EOH
     export SKYSTACK_PATH=/opt/skystack
-    export SS_ALIAS=`awk '/SS_ALIAS/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-    export SS_APITOKEN=`awk '/SS_APITOKEN/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-    export SS_APIUSER=`awk '/SS_APIUSER/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-    export SS_BASE=`awk '/SS_BASE/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
+    export ALIAS=`awk '/ALIAS/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
+    export API_TOKEN=`awk '/API_TOKEN/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
+    export API_USER=`awk '/API_USER/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
+    export BASE=`awk '/BASE/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
 
     HTTP=https
 
-    curl -k -o /tmp/#{script["skyscript_id"]}_part -u $SS_APIUSER:$SS_APITOKEN $HTTP://$SS_BASE/$SS_ALIAS/scripts/#{script["skyscript_id"]}#{script["ext"]}
-    tr -d '\015\032' < /tmp/#{script["skyscript_id"]}_part > /tmp/#{script["skyscript_id"]}#{script["ext"]}
-    chmod +x /tmp/#{script["skyscript_id"]}#{script["ext"]}
+    curl -k -o /tmp/#{script["resource"]}-raw -u $API_USER:$API_TOKEN $HTTP://$BASE/$ALIAS/scripts/#{script["identifier"]}/out.#{script["ext"]}}
+
+    tr -d '\015\032' < /tmp/#{script["resource"]}-raw > /tmp/#{script["resource"]}
+
+    chmod +x /tmp/#{script["resource"]}
+
     EOH
-    notifies :run, resources(:execute => "run_skyscript_#{script["skyscript_id"]}")
-    creates "/tmp/#{script["skyscript_id"]}#{script["ext"]}"
+    notifies :run, resources(:execute => "run-script-#{script["resource"]}")
+    creates "/tmp/#{script["resource"]}"
   end
 end
