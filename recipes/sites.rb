@@ -59,6 +59,20 @@ node["sites"].each do |site|
     recursive true
   end
 
+if site['application']
+
+app = site['application']
+  
+  include_recipe "application"
+
+  application app['name'] do
+    path app['path']
+    repository app['repository']
+    revision app['path']
+    deploy_key app['deploy_key']
+  end
+
+end
 
    Chef::Log.info "skystack::sites adding our default landing page to #{site["document_root"]}"
    cookbook_file "#{site["document_root"]}/index.php" do
@@ -78,6 +92,7 @@ node["sites"].each do |site|
   service site['config']['webserver'] do
     action :restart
   end
+
 
 end
 
