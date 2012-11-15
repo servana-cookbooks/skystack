@@ -74,7 +74,7 @@ app = site['application']
     path app['path']
     repository app['repository']
     revision app['revision']
-    git_ssh_wrapper app['git_ssh_wrapper']
+    ssh_wrapper app['ssh_wrapper']
     deploy_key app['deploy_key']
   end
 
