@@ -41,7 +41,7 @@ app = node['deploy']
     create_dirs_before_symlink([])
     symlinks({})
     symlink_before_migrate({
-      local_settings_file_name => local_settings_full_path
+    #  local_settings_file_name => local_settings_full_path
     })
   end
 
