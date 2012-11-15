@@ -33,7 +33,6 @@ node["scripts"].each do |script|
   Chef::Log.info "skystack::script via skystack we fetch the script contents #{script["resource"]}"
 
   bash "get-script" do
-    interpreter "#{script["ext"].gsub(".", "")}"
     user "root"
     cwd "/tmp"
     code <<-EOH
