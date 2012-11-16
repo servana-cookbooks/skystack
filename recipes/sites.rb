@@ -43,7 +43,7 @@ node["sites"].each do |site|
         docroot site["document_root"]
         server_name site["server_name"]
         server_aliases site["server_aliases"]
-        ports site["port"]
+        port site["port"]
         ssl "on"
         ssl_certificate_file site["ssl_certificate_file"]  
         ssl_certificate_key_file site["ssl_certificate_key_file"]
@@ -57,7 +57,7 @@ node["sites"].each do |site|
         docroot site["document_root"]
         server_name site["server_name"]
         server_aliases site["server_aliases"]
-        ports site["port"]
+        port site["port"]
       end
   
   end
