@@ -33,13 +33,6 @@ node["sites"].each do |site|
     end
   end
 
-  if site["port"]
-    node.set["#{webserver}"]['listen_ports'] = site["port"]
-  else
-    site["port"] = node["#{webserver}"]['listen_ports']
-  end
-
-
   if site["ssl"] == "on"
 
     include_recipe "apache2::mod_ssl"
