@@ -36,7 +36,7 @@ app = node['deploy']
     group app['group']
     deploy_to app['path']
     action deploy_action
-    #git_ssh_wrapper app['ssh_wrapper']
+    git_ssh_wrapper app['ssh_wrapper']
     shallow_clone true
     purge_before_symlink([])
     create_dirs_before_symlink([])
