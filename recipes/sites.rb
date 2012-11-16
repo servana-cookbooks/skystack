@@ -33,21 +33,45 @@ node["sites"].each do |site|
     end
   end
 
-  if site["ssl"] == 1
-    include_recipe "apache2::mod_ssl"
-  end
-
-  if !site["port"].nil?
+  if site["port"]
     node.set["#{webserver}"]['listen_ports'] = site["port"]
+  else
+    site["port"] = node["#{webserver}"]['listen_ports']
   end
 
-  Chef::Log.info "skystack::sites adding a virtual host for #{site["server_name"]} to the server"
-  web_app site["server_name"] do
-    template "#{virtual_host_template}"
-    docroot site["document_root"]
-    server_name site["server_name"]
-    server_aliases site["server_aliases"]
+
+  if site["ssl"] == "on"
+
+    include_recipe "apache2::mod_ssl"
+      Chef::Log.info "skystack::sites adding a virtual host for #{site["server_name"]} to the server"
+      
+      web_app site["server_name"] do
+        template "#{virtual_host_template}"
+        docroot site["document_root"]
+        server_name site["server_name"]
+        server_aliases site["server_aliases"]
+        ports site["port"]
+        ssl "on"
+        ssl_certificate_file site["ssl_certificate_file"]  
+        ssl_certificate_key_file site["ssl_certificate_key_file"]
+        ssl_ca_certificate_file site["ssl_ca_certificate_file"]
+      end
+
+  else
+
+      web_app site["server_name"] do
+        template "#{virtual_host_template}"
+        docroot site["document_root"]
+        server_name site["server_name"]
+        server_aliases site["server_aliases"]
+        ports site["port"]
+      end
+  
   end
+
+
+
+
 
 
   Chef::Log.info "skystack::sites creating in #{site["document_root"]}"
