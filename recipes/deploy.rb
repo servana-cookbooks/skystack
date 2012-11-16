@@ -29,6 +29,7 @@ app = node['deploy']
   end
 
   deploy_revision app['name'] do
+    environment({"HOME" => "/root"})
     revision app['revision'][node.chef_environment]
     repository app['repository']
     user app['owner']
