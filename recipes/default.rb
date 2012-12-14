@@ -60,3 +60,7 @@ if node['scripts'] && node['scripts']['after_configure']
     node.set['scripts']['run_scripts'] = node['scripts']['after_configure']
   include_recipe "skystack::script"
 end
+
+if node["users"] && node["groups"]
+  include_recipe "users"
+end
