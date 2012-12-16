@@ -19,7 +19,6 @@
 
 
 if node['deploy']
-
 app = node['deploy']
 
   if app['force']

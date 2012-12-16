@@ -36,6 +36,7 @@ node["sites"].each do |site|
   if site["ssl"] == "on"
 
     include_recipe "apache2::mod_ssl"
+
       Chef::Log.info "skystack::sites adding a virtual host for #{site["server_name"]} to the server"
       
       web_app site["server_name"] do
@@ -62,12 +63,20 @@ node["sites"].each do |site|
   
   end
 
+if site['application']
+
+  app = site['application']
+
+  app['owner'] = 'www-data'
+  app['group'] = 'www-data'
 
 
+  node.set['deploy'] = app
+  include_recipe 'skystack::deploy'
 
-
-
-  Chef::Log.info "skystack::sites creating in #{site["document_root"]}"
+else
+  
+  Chef::Log.info "skystack::sites adding our default landing page to #{site["document_root"]}"
   directory site["document_root"] do
     owner "www-data"
     group "www-data"
@@ -76,20 +85,6 @@ node["sites"].each do |site|
     recursive true
   end
 
-if site['application']
-
-app = site['application']
-
-app['owner'] = 'www-data'
-app['group'] = 'www-data'
-
-
-node.set['deploy'] = app
-include_recipe 'skystack::deploy'
-
-end
-
-   Chef::Log.info "skystack::sites adding our default landing page to #{site["document_root"]}"
    cookbook_file "#{site["document_root"]}/index.php" do
     source "index.php"
     mode 0755
@@ -97,6 +92,8 @@ end
     group "www-data"
     action :create_if_missing
    end
+
+end
 
   if site['config']["enable"].nil?
     apache_site site["server_name"] do
