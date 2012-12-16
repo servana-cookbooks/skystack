@@ -29,13 +29,13 @@ app = node['deploy']
 
   if app['symlinks']
     app_symlinks = {}
+
     app['symlinks'].each do |link|
       app_symlinks[link['from']] = link['to']
     end
-
   else  
       app_symlinks = {}
-  else
+  end
 
   deploy_revision app['name'] do
     environment({"HOME" => app['home']})
