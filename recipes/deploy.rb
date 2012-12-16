@@ -49,7 +49,7 @@ app = node['deploy']
     shallow_clone true
     purge_before_symlink([])
     create_dirs_before_symlink([])
-    symlinks app_symlinks
+    symlinks(app_symlinks)
     symlink_before_migrate({
     #  local_settings_file_name => local_settings_full_path
     })
