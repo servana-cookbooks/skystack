@@ -67,7 +67,7 @@ if site['application']
 
   app = site['application']
 
-  app['owner'] = 'root'
+  app['owner'] = 'www-data'
   app['group'] = 'www-data'
 
 
