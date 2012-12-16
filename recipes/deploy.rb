@@ -27,6 +27,16 @@ app = node['deploy']
    deploy_action = :deploy
   end
 
+  if app['symlinks']
+    app_symlinks = {}
+    app['symlinks'].each do |link|
+      app_symlinks[link['from']] => link['to']
+    end
+
+  else  
+      app_symlinks = {}
+  else
+
   deploy_revision app['name'] do
     environment({"HOME" => app['home']})
     revision app['revision'][node.chef_environment]
@@ -39,7 +49,7 @@ app = node['deploy']
     shallow_clone true
     purge_before_symlink([])
     create_dirs_before_symlink([])
-    symlinks({})
+    symlinks app_symlinks
     symlink_before_migrate({
     #  local_settings_file_name => local_settings_full_path
     })
