@@ -30,7 +30,7 @@ app = node['deploy']
   if app['symlinks']
     app_symlinks = {}
     app['symlinks'].each do |link|
-      app_symlinks[link['from']] => link['to']
+      app_symlinks[link['from']] = link['to']
     end
 
   else  
