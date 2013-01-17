@@ -39,11 +39,12 @@ app = node['deploy']
 
   deploy_revision app['name'] do
     environment({"HOME" => app['home']})
-    revision app['revision'][node.chef_environment]
+    revision app['revision']
     repository app['repository']
     user app['owner']
     group app['group']
     deploy_to app['path']
+    current_path "#{app['path']}/current"
     action deploy_action
     git_ssh_wrapper app['ssh_wrapper']
     shallow_clone true
