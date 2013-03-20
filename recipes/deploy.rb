@@ -48,12 +48,16 @@ app = node['deploy']
     action deploy_action
     git_ssh_wrapper app['ssh_wrapper']
     shallow_clone true
-    purge_before_symlink([])
-    create_dirs_before_symlink([])
-    symlinks(app_symlinks)
-    symlink_before_migrate({
-    #  local_settings_file_name => local_settings_full_path
-    })
+    purge_before_symlink.clear
+    create_dirs_before_symlink.clear
+    symlinks.clear
+    symlink_before_migrate.clear
+    before_restart do
+        exectue "rm -rf #{release_path}/my/tmp"
+        execute "ln -nfs #{shared_dir}/tmp #{release_path}/my/tmp"
+        execute "chown -R www-data:www-data #{release_path}/my/tmp/*"
+    end
+    restart_command "/etc/init.d/apache2 restart"
   end
 
 end
