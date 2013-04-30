@@ -83,6 +83,23 @@ if site['config']['webserver'] == 'apache2'
       end
    end
   
+  if ! site['directories'].nil?
+      site['directories'].each do |dir|
+        directory "#{dir['name']}" do
+            mode 00755
+            action :create
+        end
+      end
+  end  
+
+  if ! site['symlinks'].nil?
+    site['symlinks'].each do |sym|
+      link "#{sym['from']}" do
+          to "#{sym['to']}"
+      end
+    end
+  end  
+
   service "apache2" do
     action :restart
   end

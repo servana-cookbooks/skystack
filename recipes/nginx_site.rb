@@ -81,6 +81,24 @@ end
     end
   end
 
+  if ! site['directories'].nil?
+      site['directories'].each do |dir|
+        directory "#{dir['path']}" do
+            mode 00755
+            action :create
+            recursive true
+        end
+      end
+  end  
+
+  if ! site['symlinks'].nil?
+    site['symlinks'].each do |sym|
+      link "#{sym['from']}" do
+          to "#{sym['to']}"
+      end
+    end
+  end  
+
   service "nginx" do
     action :restart
   end
