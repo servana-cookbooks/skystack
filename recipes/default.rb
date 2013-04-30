@@ -16,6 +16,29 @@
 # limitations under the License.
 #
 
+#execute "echo #{node.to_json} > #{node['skystack']['log_path']}/node.json"
+
+require 'ohai'
+ o = Ohai::System.new
+ o.all_plugins
+ total_memory = o['memory']['total'].tr('kb','').to_i()
+ free_memory = o['memory']['free'].tr('kb','').to_i()
+
+ size = case total_memory
+  when total_memory < 630000 then 0.5
+  when total_memory < 1048576 then 1
+  when total_memory < 2097152 then 2
+  when total_memory < 4194304 then 4
+  when total_memory < 8388608 then 8
+  when total_memory < 16777216 then 16  
+  when total_memory < 33554432 then 32
+  when total_memory < 67108864 then 64 
+end
+
+node.set['skystack']['memory'] = size
+
+Chef::Log.info "skystack::default total memory #{node['skystack']['memory']}"
+
 if node['scripts'] && node['scripts']['before_configure']
     node.set['scripts']['run_scripts'] = node['scripts']['before_configure']
   include_recipe "skystack::script"
@@ -41,3 +64,17 @@ end
 if node["users"] && node["groups"]
   include_recipe "users"
 end
+
+cookbook_file "/etc/apt/sources.list.d/erlang-solutions.list" do
+    source "erlang-solutions.list"
+    mode 644
+    action :create_if_missing
+end
+
+cookbook_file "/etc/apt/sources.list.d/newrelic.list" do
+    source "newrelic.list"
+    mode 644
+    action :create_if_missing
+end
+
+#execute 'wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -'

@@ -1,0 +1,46 @@
+upstream backend {
+   server <%= @params[:backend_server] %>;
+   #server 127.0.0.1:7654;
+}
+
+server {
+	### server port and name ###
+    listen		<%= @params[:port] %>;
+    
+ <% if @params[:server_aliases] %>
+    server_name	<%= @params[:server_name] %> <% @params[:server_aliases].each do |a| %><%= "#{a}" %> <% end %>;
+ <% else %>  
+    server_name <%= @params[:server_name] %>;
+ <% end %>
+
+	root <%= @params[:docroot] %>; 
+	
+    access_log      /var/log/nginx/<%= @params[:server_name] %>-ssl-access.log;
+    error_log       /var/log/nginx/<%= @params[:server_name] %>-ssl-error.log;
+ 
+  <% if @params[:ssl] == "on" %>
+    ssl         on;
+
+    #  Enable SSL
+    ssl_certificate <%= @params[:ssl_certificate_file] %>;
+    ssl_certificate_key <%= @params[:ssl_certificate_key_file] %>;
+    ssl_client_certificate <%= @params[:ssl_ca_certificate_file] %>;
+
+    ### Add SSL specific settings here ###
+    ssl_protocols        SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers on;
+        keepalive_timeout    60;
+    ssl_session_cache    shared:SSL:10m;
+    ssl_session_timeout  10m;
+  <% end %>
+	 
+	### We want full access to SSL via backend ###
+     	location / {
+	        proxy_pass http://backend;
+   		    proxy_set_header HOST $host;
+    		proxy_set_header X-Real-IP $remote_addr;
+    		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+      }
+}

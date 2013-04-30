@@ -1,0 +1,10 @@
+server {
+  listen <%= @params[:port] %>;
+    
+ <% if @params[:server_aliases] %>
+    server_name	<%= @params[:server_name] %> <% @params[:server_aliases].each do |a| %><%= "#{a}" %> <% end %>;
+ <% else %>  
+    server_name <%= @params[:server_name] %>;
+ <% end %>
+    rewrite ^(.*)$ <%= @params[:redirect] %>$1 permanent;
+}

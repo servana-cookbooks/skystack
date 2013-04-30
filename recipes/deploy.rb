@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 
-
-
-
 if node['deploy']
 app = node['deploy']
 
@@ -44,7 +41,6 @@ app = node['deploy']
     user app['owner']
     group app['group']
     deploy_to app['path']
-    current_path "#{app['path']}/current"
     action deploy_action
     git_ssh_wrapper app['ssh_wrapper']
     shallow_clone true
@@ -52,12 +48,7 @@ app = node['deploy']
     create_dirs_before_symlink.clear
     symlinks.clear
     symlink_before_migrate.clear
-    before_restart do
-        exectue "rm -rf #{release_path}/my/tmp"
-        execute "ln -nfs #{shared_dir}/tmp #{release_path}/my/tmp"
-        execute "chown -R www-data:www-data #{release_path}/my/tmp/*"
-    end
     restart_command "/etc/init.d/apache2 restart"
-  end
+end
 
 end

@@ -35,5 +35,52 @@ node["databases"].each do |db|
       priv "#{db["permissions"].join(",")}"
       action [:create, :grant, :flush]
    end
+
+end
+
+if !node['mysql']['daily_backup'].nil?
+
+    cookbook_file "/usr/local/bin/automysqlbackup" do
+      source "automysqlbackup"
+      backup false
+      path "/usr/local/bin"
+      action :create_if_missing
+    end
+
+    execute "chmod +x /usr/local/bin/automysqlbackup" do
+      only_if do File.exists?('/usr/local/bin/automysqlbackup') end
+    end
+
+    directory '/etc/automysqlbackup' do
+      mode 00755
+      action :create
+      owner 'root'
+      group 'root'
+      recursive true
+    end
+
+    template "/etc/automysqlbackup/automysqlbackup.conf" do
+      source "automysqlbackup.conf.erb"
+      owner "root"
+      group "root"
+      mode "0644"
+      variables(
+        :host               => 'localhost',
+        :user               => 'root',
+        :password           => node['mysql']['server_root_password'],
+        :backup_email       => node['mysql']['backup_email']
+      )
+    end
+
+    cookbook_file "/etc/cron.daily/automysqlbackup.cron.sh" do
+      source "automysqlbackup.cron.sh"
+      backup false
+      path "/etc/cron.daily"
+      action :create_if_missing
+    end
     
+    execute "chmod +x /usr/local/bin/automysqlbackup.cron.sh" do
+      only_if do File.exists?('/usr/local/bin/automysqlbackup.cron.sh') end
+    end
+
 end
