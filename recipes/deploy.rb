@@ -15,40 +15,29 @@
 # limitations under the License.
 #
 
-if node['deploy']
-app = node['deploy']
 
-  if app['force']
-   deploy_action = app['force']
-  else
-   deploy_action = :deploy
-  end
+# "deployments":[
+#      "config":
+#      {
+#          "strategy":"archive",
+#      },
+#    "name":"WKDAPP",
+#    "fetch_archive_command":"curl -L -o /opt/skystack/downloads/github_arch.zip -H 'https://api.github.com/repos/user/repo/zipball'",
+#    "archive_path":"/opt/skystack/downloads/github_arch.zip",
+#    "base_path":"/var/www/vhosts/WKDAPP.com",
+#    "deploy_path":"/var/www/vhosts/WKDAPP.com/releases",
+#    "shared_path":"/var/www/vhosts/WKDAPP.com/shared",
+#    "symlink":"/var/www/vhosts/WKDAPP.com/current"
+# ],
 
-  if app['symlinks']
-    app_symlinks = {}
+if node['deployments']
 
-    app['symlinks'].each do |link|
-      app_symlinks[link['from']] = link['to']
+  node['deployments'].each do |deploy|
+    if deploy['config']['type'] == 'archive'
+     include_recipe "skystack::deploy_archive"
+    elsif deploy['config']['type'] == 'repo'
+     include_recipe "skystack::deploy_repo"
     end
-  else  
-      app_symlinks = {}
   end
-
-  deploy_revision app['name'] do
-    environment({"HOME" => app['home']})
-    revision app['revision']
-    repository app['repository']
-    user app['owner']
-    group app['group']
-    deploy_to app['path']
-    action deploy_action
-    git_ssh_wrapper app['ssh_wrapper']
-    shallow_clone true
-    purge_before_symlink.clear
-    create_dirs_before_symlink.clear
-    symlinks.clear
-    symlink_before_migrate.clear
-    restart_command "/etc/init.d/apache2 restart"
-end
 
 end

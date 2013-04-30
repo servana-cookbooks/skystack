@@ -96,6 +96,7 @@ if site['config']['webserver'] == 'apache2'
     site['symlinks'].each do |sym|
       link "#{sym['from']}" do
           to "#{sym['to']}"
+          only_if File.exists?("#{sym['from']}") end
       end
     end
   end  

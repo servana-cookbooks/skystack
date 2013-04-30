@@ -56,6 +56,10 @@ if ! node['sites'].nil?
   include_recipe "skystack::sites"
 end
 
+if ! node['deployments'].nil?
+  include_recipe "skystack::deploy"
+end
+
 if node['scripts'] && node['scripts']['after_configure']
     node.set['scripts']['run_scripts'] = node['scripts']['after_configure']
   include_recipe "skystack::script"
