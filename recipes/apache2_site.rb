@@ -87,7 +87,7 @@ if site['config']['webserver'] == 'apache2'
   
   if ! site['directories'].nil?
     site['directories'].each do |dir|
-      directory "#{dir['name']}" do
+      directory "#{dir['path']}" do
         mode 00755
         action :create
       end
