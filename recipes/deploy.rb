@@ -30,17 +30,5 @@
 #    "symlink":"/var/www/vhosts/WKDAPP.com/current"
 # ],
 
-if node['deployments']
-
-  node['deployments'].each do |app|
-
-    if app['config']['strategy'] == 'archive'
-     include_recipe "skystack::deploy_archive"
-     
-    elsif app['config']['strategy'] == 'repo'
-     include_recipe "skystack::deploy_repo"
-    end
-
-  end
-
-end
+include_recipe "skystack::deploy_archive"
+include_recipe "skystack::deploy_repo"
