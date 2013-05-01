@@ -37,9 +37,9 @@ if node['deployments']
 			end
 		end
 
-		if File.exist?("#{app['base_path']}/current") || !File.symlink?("#{app['base_path']}/current")
+		if File.exist?("#{app['base_path']}/current") || ! File.symlink?("#{app['base_path']}/current")
 			
-			execute "mv #{app['base_path']}/current #{app['base_path']}/old_current" do
+			execute "rm -rf #{app['base_path']}/current" do
 				cwd "#{app['base_path']}"
 			end
 
