@@ -48,16 +48,16 @@ if ! node['databases'].nil?
 	include_recipe "skystack::databases"
 end
 
+if ! node['deployments'].nil?
+  include_recipe "skystack::deploy"
+end
+
 if ! node['firewall'].nil?
 	include_recipe "skystack::firewall"
 end
 
 if ! node['sites'].nil?
   include_recipe "skystack::sites"
-end
-
-if ! node['deployments'].nil?
-  include_recipe "skystack::deploy"
 end
 
 if node['scripts'] && node['scripts']['after_configure']

@@ -21,7 +21,7 @@ if node['deployments']
 			only_if do ! File.exists?("#{app['archive_path']}") end
 		end
 
-		execute "unzip #{app['archive_path']}" do 
+		execute "unzip -o #{app['archive_path']}" do 
 			cwd "#{app['deploy_path']}"
 			only_if do File.exists?("#{app['archive_path']}") end
 		end
