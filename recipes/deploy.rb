@@ -32,12 +32,12 @@
 
 if node['deployments']
 
-  node['deployments'].each do |deploy|
+  node['deployments'].each do |app|
 
-    if deploy['config']['strategy'] == 'archive'
+    if app['config']['strategy'] == 'archive'
      include_recipe "skystack::deploy_archive"
      
-    elsif deploy['config']['strategy'] == 'repo'
+    elsif app['config']['strategy'] == 'repo'
      include_recipe "skystack::deploy_repo"
     end
 

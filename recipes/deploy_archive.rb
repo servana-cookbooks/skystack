@@ -1,28 +1,28 @@
 
-if deploy['config']['strategy'] == 'archive'
+if app['config']['strategy'] == 'archive'
 
-	execute "#{deploy['fetch_archive_command']}" do
-		only_if do ! File.exists?("#{deploy['archive_path']}") end
+	execute "#{app['fetch_archive_command']}" do
+		only_if do ! File.exists?("#{app['archive_path']}") end
 	end
 
-	execute "unzip #{deploy['archive_path']}" do 
-		cwd "#{deploy['release_path']}"
-		only_if do File.exists?("#{deploy['archive_path']}") end
+	execute "unzip #{app['archive_path']}" do 
+		cwd "#{app['release_path']}"
+		only_if do File.exists?("#{app['archive_path']}") end
 	end
 
-	execute "rm #{deploy['archive_path']}" do 
-		only_if do File.exists?("#{deploy['archive_path']}") end
+	execute "rm #{app['archive_path']}" do 
+		only_if do File.exists?("#{app['archive_path']}") end
 	end
 
 	# lets rename current symlink to rollback
-	if ! deploy['rollback_path'].nil?
-		execute "mv #{deploy['symlink']} #{deploy['rollback']}" do 
-			only_if do File.exists?("#{deploy['symlink']}") end
+	if ! app['rollback_path'].nil?
+		execute "mv #{app['symlink']} #{app['rollback']}" do 
+			only_if do File.exists?("#{app['symlink']}") end
 		end
 	end
 
-	execute "ln -s #{deploy['base_path']}/releases/`ls -a #{deploy['base_path']}/releases | grep #{deploy['name']}` current" do
-		cwd "#{deploy['base_path']}"
+	execute "ln -s #{app['base_path']}/releases/`ls -a #{app['base_path']}/releases | grep #{app['name']}` current" do
+		cwd "#{app['base_path']}"
 	end
 
 end
