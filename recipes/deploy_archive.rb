@@ -45,7 +45,7 @@ if node['deployments']
 
 		end
 
-		execute "ln -s #{app['base_path']}/releases/`ls -a #{app['base_path']}/releases | grep #{app['name']}` current" do
+		execute "ln -s #{app['base_path']}/releases/`ls -lUtr #{app['base_path']}/releases | head -4 | tail -1| awk '{print $9}'` current" do
 			cwd "#{app['base_path']}"
 		end
 
