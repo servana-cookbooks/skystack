@@ -33,11 +33,14 @@
 if node['deployments']
 
   node['deployments'].each do |deploy|
-    if deploy['config']['type'] == 'archive'
+
+    if deploy['config']['strategy'] == 'archive'
      include_recipe "skystack::deploy_archive"
-    elsif deploy['config']['type'] == 'repo'
+     
+    elsif deploy['config']['strategy'] == 'repo'
      include_recipe "skystack::deploy_repo"
     end
+
   end
 
 end
