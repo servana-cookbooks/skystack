@@ -5,6 +5,12 @@ if node['deployments']
 
 	if app['config']['strategy'] == 'archive'
 
+		directory "#{app['release_path']}" do
+		 mode 00755
+		 action :create
+		 recursive true
+		end
+
 		execute "#{app['fetch_archive_command']}" do
 			only_if do ! File.exists?("#{app['archive_path']}") end
 		end
@@ -23,6 +29,14 @@ if node['deployments']
 			execute "mv #{app['symlink']} #{app['rollback']}" do 
 				only_if do File.exists?("#{app['symlink']}") end
 			end
+		end
+
+		if File.exist?("#{app['base_path']}/current") || !File.symlink?("#{app['base_path']}/current")
+			
+			execute "mv #{app['base_path']}/current #{app['base_path']}/old_current" do
+				cwd "#{app['base_path']}"
+			end
+			
 		end
 
 		execute "ln -s #{app['base_path']}/releases/`ls -a #{app['base_path']}/releases | grep #{app['name']}` current" do
