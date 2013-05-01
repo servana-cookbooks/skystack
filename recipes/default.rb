@@ -68,17 +68,3 @@ end
 if node["users"] && node["groups"]
   include_recipe "users"
 end
-
-cookbook_file "/etc/apt/sources.list.d/erlang-solutions.list" do
-    source "erlang-solutions.list"
-    mode 644
-    action :create_if_missing
-end
-
-cookbook_file "/etc/apt/sources.list.d/newrelic.list" do
-    source "newrelic.list"
-    mode 644
-    action :create_if_missing
-end
-
-#execute 'wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -'
