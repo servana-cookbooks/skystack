@@ -42,7 +42,8 @@ if site['config']['webserver'] == 'apache2'
 
     if site["server_aliases"]
       server_aliases site["server_aliases"]
-    end        
+    end
+
     if site["ssl"] == "on"
      ssl "on"
      ssl_certificate_file site["ssl_certificate_file"]  
@@ -53,6 +54,7 @@ if site['config']['webserver'] == 'apache2'
     if site["domain_redirect"]
       domain_redirect site["domain_redirect"]
     end
+
     if site["permanent_redirect"]
       permanent_redirect site["permanent_redirect"]
     end
@@ -84,19 +86,18 @@ if site['config']['webserver'] == 'apache2'
    end
   
   if ! site['directories'].nil?
-      site['directories'].each do |dir|
-        directory "#{dir['name']}" do
-            mode 00755
-            action :create
-        end
+    site['directories'].each do |dir|
+      directory "#{dir['name']}" do
+        mode 00755
+        action :create
       end
+    end
   end  
 
   if ! site['symlinks'].nil?
     site['symlinks'].each do |sym|
       link "#{sym['from']}" do
-          to "#{sym['to']}"
-          only_if File.exists?("#{sym['from']}") end
+        to "#{sym['to']}"
       end
     end
   end  
