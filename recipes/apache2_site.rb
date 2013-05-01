@@ -90,6 +90,7 @@ if site['config']['webserver'] == 'apache2'
       directory "#{dir['path']}" do
         mode 00755
         action :create
+        recursive dir['recursive']
       end
     end
   end  

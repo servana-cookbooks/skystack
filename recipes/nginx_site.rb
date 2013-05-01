@@ -86,7 +86,7 @@ end
         directory "#{dir['path']}" do
             mode 00755
             action :create
-            recursive true
+            recursive dir['recursive']
         end
       end
   end  
