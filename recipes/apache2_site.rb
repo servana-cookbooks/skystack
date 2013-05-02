@@ -101,7 +101,18 @@ if site['config']['webserver'] == 'apache2'
         to "#{sym['to']}"
       end
     end
-  end  
+  end 
+
+  if ! site['cache_server'].nil?
+
+    if !site['cache_server']['listen_port'] == 80
+      node.set['varnish']['listen_port'] = site['cache_server']['listen_port']
+    end
+
+    #node.set['varnish']['backend_host'] = site['host']
+    node.set['varnish']['backend_port'] = site['port']
+  
+  end
 
   service "apache2" do
     action :restart
