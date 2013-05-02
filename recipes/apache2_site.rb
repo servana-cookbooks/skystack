@@ -104,13 +104,15 @@ if site['config']['webserver'] == 'apache2'
   end 
 
   if ! site['cache_server'].nil?
-
+  
     if !site['cache_server']['listen_port'] == 80
       node.set["#{site['cache_server']['type']}"]['listen_port'] = site['cache_server']['listen_port']
     end
-    
+
     node.set["#{site['cache_server']['type']}"]['backend_port'] = site['port']
-  
+    
+    include_recipe "#{site['cache_server']['type']}"
+    
   end
 
   service "apache2" do
