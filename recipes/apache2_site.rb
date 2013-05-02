@@ -106,11 +106,10 @@ if site['config']['webserver'] == 'apache2'
   if ! site['cache_server'].nil?
 
     if !site['cache_server']['listen_port'] == 80
-      node.set['varnish']['listen_port'] = site['cache_server']['listen_port']
+      node.set["#{site['cache_server']['type']}"]['listen_port'] = site['cache_server']['listen_port']
     end
-
-    #node.set['varnish']['backend_host'] = site['host']
-    node.set['varnish']['backend_port'] = site['port']
+    
+    node.set["#{site['cache_server']['type']}"]['backend_port'] = site['port']
   
   end
 
