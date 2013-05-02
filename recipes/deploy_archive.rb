@@ -30,6 +30,12 @@ if node['deployments']
 			only_if do File.exists?("#{app['archive_path']}") end
 		end
 
+		if File.exist?("#{app['rollback_path']}")
+			execute "rm #{app['rollback_path']}" do
+				cwd "#{app['base_path']}"
+			end
+		end
+
 		# lets rename current symlink to rollback
 		if ! app['rollback_path'].nil?
 			execute "mv #{app['symlink']} #{app['rollback_path']}" do 
