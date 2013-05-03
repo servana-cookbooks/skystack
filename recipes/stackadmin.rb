@@ -62,7 +62,7 @@
     sa['home'] = true
     sa['comment'] = "Created StackAdmin"
     sa['is_admin'] = true
-    sa['grant_sudo'] = true
+    sa['grant_sudo'] = false
 
     home_dir = "/home/#{sa['username']}"
     user_shell = "#{node['user']['defaults']['shell']}"
