@@ -74,6 +74,8 @@
       home "#{home_dir}"
     end
 
+    group "stackadmin"
+
     group "#{sa['username']}" do
       members "#{sa['username']}"
       append true
