@@ -88,13 +88,18 @@
     end
 
    if sa['grant_sudo']
-      execute "echo '%#{gsa['name']} ALL=(ALL) ALL' > /etc/sudoers.d/#{sa['username']}-#{gsa['name']}" do
-        only_if do ! File.exists?("/etc/sudoers.d/#{sa['username']}-#{gsa['name']}") end
+
+      execute "echo '%#{gsa['name']} ALL=(ALL) ALL' > /etc/sudoers.d/grp-#{gsa['name']}" do
+        only_if do ! File.exists?("/etc/sudoers.d/grp-#{gsa['name']}") end
       end
-      execute "echo '#{sa['username']} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/#{sa['username']}-#{gsa['name']}" do
-        only_if do File.exists?("/etc/sudoers.d/#{sa['username']}-#{gsa['name']}") end
+
+      execute "echo '#{sa['username']} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/usr-#{sa['username']}" do
+        only_if do ! File.exists?("/etc/sudoers.d/usr-#{sa['username']}") end
       end
-      execute "chmod 440 /etc/sudoers.d/#{sa['username']}-#{gsa['name']}"
+
+      execute "chmod 440 /etc/sudoers.d/grp-#{gsa['name']}"
+      execute "chmod 440 /etc/sudoers.d/usr-#{sa['username']}"
+
    end
 
    execute "passwd -l #{sa['username']}"
@@ -105,8 +110,6 @@
       mode "0755"
       recursive true
     end
-    
-    Chef::Log.info "skystack::stackadmin [ curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref} ]"
 
     execute "curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref}"
     execute "chmod 600 #{home_dir}/.ssh/authorized_keys"
