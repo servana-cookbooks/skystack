@@ -76,14 +76,14 @@
     if u['shell']
         user_shell = u['shell']
     else
-        user_shell = node['user']['default']['shell']
+        user_shell = "#{node['user']['default']['shell']}"
     end
 
     user u['username'] do
       shell user_shell
-      comment u['comment']
-      supports :manage_home => manage_home
-      home home_dir
+      comment "#{u['comment']}"
+      supports :manage_home => "#{manage_home}"
+      home "#{home_dir}"
     end
     
     directory "#{home_dir}/.ssh" do
