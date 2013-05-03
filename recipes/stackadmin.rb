@@ -54,7 +54,7 @@
     Chef::Log.info "skystack::stackadmin creating a stackadmin called #{StackAdminLogin}"
 
     gsa = {}
-    gsa['name'] = "sys-admin"
+    gsa['name'] = "admin"
 
     sa = {}
 
@@ -80,7 +80,7 @@
     end
 
     if sa['is_admin']
-      group "sys-admin" do
+      group "admin" do
         action :modify
         members ["#{sa['username']}"]
         append true
