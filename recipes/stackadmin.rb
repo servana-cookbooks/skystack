@@ -88,9 +88,10 @@
     end
 
    if sa['grant_sudo']
-      node.set['authorization']['sudo']['users'].merge({'username'=>sa['username']})
-      node.set['authorization']['sudo']['groups'].merge({'name'=>gsa['name']})
-      include_recipe "users::sudo"
+      execute "echo 'thrll ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/#{sa['username']}-#{sa['username']}" do
+        only_if do ! File.exists?("/etc/sudoers.d/#{sa['username']}-#{sa['username']}") end
+      end
+      execute "chmod 440 /etc/sudoers.d/#{sa['username']}-#{sa['username']}"
    end
 
    execute "passwd -l #{sa['username']}"
