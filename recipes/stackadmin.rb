@@ -45,87 +45,71 @@
 
     Chef::Log.info "skystack::stackadmin creating a stackadmin called #{StackAdminLogin}"
 
-    g = {}
-    g['name'] = "sys-admin"
+    gsa = {}
+    gsa['name'] = "sys-admin"
 
-    u = {}
+    sa = {}
 
-    u['ssh_keys'] = http_request "get public key" do
+    sa['ssh_keys'] = http_request "get public key" do
       action :get
       url StackAdminHref
       headers({"AUTHORIZATION" => "Basic #{Base64.encode64("#{ApiUser}:#{ApiToken}")}"})
     end
 
-    u['username']= StackAdminLogin
-    u['home'] = true
-    u['comment'] = "First StackAdmin user"
-    u['is_admin'] = true
-    u['grant_sudo'] = true
+    sa['username'] = StackAdminLogin
+    sa['home'] = true
+    sa['comment'] = "Created StackAdmin"
+    sa['is_admin'] = true
+    sa['grant_sudo'] = true
 
-    if u['home']
-        home_dir = "/home/#{u['username']}"
-    elsif u['home_dir']
-        home_dir = "#{u['home_dir']}"
-    end
 
-    if home_dir
-        manage_home = true
-    else 
-        manage_home = false
-    end
+    home_dir = "/home/#{sa['username']}"
+    user_shell = "#{node['user']['defaults']['shell']}"
 
-    if u['shell']
-        user_shell = u['shell']
-    else
-        user_shell = "#{node['user']['defaults']['shell']}"
-    end
-
-    user u['username'] do
+    user "#{sa['username']}" do
       shell user_shell
-      comment "#{u['comment']}"
+      comment "#{sa['comment']}"
       supports :manage_home => "#{manage_home}"
       home "#{home_dir}"
     end
 
-    group "#{u['username']}" do
-      members "#{u['username']}"
+    group "#{sa['username']}" do
+      members "#{sa['username']}"
       append true
     end
-    
-    directory "#{home_dir}/.ssh" do
-      owner "#{u['username']}"
-      group "#{u['username']}"
-      mode "0700"
-    end
 
-    if u['ssh_keys']
-
-      template "#{home_dir}/.ssh/authorized_keys" do
-       source "authorised_keys.erb"
-       owner "#{u['username']}"
-       group "#{u['username']}"
-       mode "0600"
-       variables :ssh_keys => "#{u['ssh_keys']}"
-      end
-
-    end
-    
-    if u['is_admin']
+    if sa['is_admin']
       group "sys-admin" do
         action :modify
-        members ["#{u['username']}"]
+        members ["#{sa['username']}"]
         append true
       end
     end
 
-   if u['grant_sudo']
+   if sa['grant_sudo']
       node.set['authorization']['sudo']['users'] << u
       node.set['authorization']['sudo']['group'] << g
       include_recipe "users::sudo"
    end
 
-   execute "passwd -l #{u['username']}"
+   execute "passwd -l #{sa['username']}"
 
   else
     Chef::Log.info "skystack::stackadmin no settings for a stackadmin"
+  end
+
+  directory "#{home_dir}/.ssh" do
+    owner "#{sa['username']}"
+    group "#{sa['username']}"
+    mode "0700"
+  end
+
+  if sa['ssh_keys']
+    template "#{home_dir}/.ssh/authorized_keys" do
+     source "authorised_keys.erb"
+     owner "#{sa['username']}"
+     group "#{sa['username']}"
+     mode "0600"
+     variables :ssh_keys => "#{sa['ssh_keys']}"
+    end
   end
