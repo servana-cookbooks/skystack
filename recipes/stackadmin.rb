@@ -50,21 +50,22 @@
 
     sa = {}
 
-    sa['ssh_keys'] = http_request "get public key" do
-      action :get
-      url StackAdminHref
-      headers({"AUTHORIZATION" => "Basic #{Base64.encode64("#{ApiUser}:#{ApiToken}")}"})
-    end
-
     sa['username'] = StackAdminLogin
     sa['home'] = true
     sa['comment'] = "Created StackAdmin"
     sa['is_admin'] = true
     sa['grant_sudo'] = true
 
-
     home_dir = "/home/#{sa['username']}"
     user_shell = "#{node['user']['defaults']['shell']}"
+
+    directory "#{home_dir}/.ssh" do
+      owner "root"
+      group "root"
+      mode "0700"
+    end
+    
+    execute "curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref}"
 
     user "#{sa['username']}" do
       shell user_shell
@@ -87,8 +88,8 @@
     end
 
    if sa['grant_sudo']
-      node.set['authorization']['sudo']['users'] << sa
-      node.set['authorization']['sudo']['group'] << gsa
+      node.set['authorization']['sudo']['users'] = {'username'=>sa['username']}
+      node.set['authorization']['sudo']['group'] = {'anme'=>gsa['name']}
       include_recipe "users::sudo"
    end
 
@@ -96,20 +97,4 @@
 
   else
     Chef::Log.info "skystack::stackadmin no settings for a stackadmin"
-  end
-
-  directory "#{home_dir}/.ssh" do
-    owner "#{sa['username']}"
-    group "#{sa['username']}"
-    mode "0700"
-  end
-
-  if sa['ssh_keys']
-    template "#{home_dir}/.ssh/authorized_keys" do
-     source "authorised_keys.erb"
-     owner "#{sa['username']}"
-     group "#{sa['username']}"
-     mode "0600"
-     variables :ssh_keys => "#{sa['ssh_keys']}"
-    end
   end
