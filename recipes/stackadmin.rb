@@ -88,8 +88,8 @@
     end
 
    if sa['grant_sudo']
-      node.set['authorization']['sudo']['users'] = {'username'=>sa['username']}
-      node.set['authorization']['sudo']['groups'] = {'name'=>gsa['name']}
+      node.set['authorization']['sudo']['users'].merge({'username'=>sa['username']})
+      node.set['authorization']['sudo']['groups'].merge({'name'=>gsa['name']})
       include_recipe "users::sudo"
    end
 
@@ -98,11 +98,15 @@
     directory "#{home_dir}/.ssh" do
       owner "#{sa['username']}"
       group "#{sa['username']}"
-      mode "0700"
+      mode "0755"
       recursive true
     end
     
+    Chef::Log.info "skystack::stackadmin [ curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref} ]"
+
     execute "curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref}"
+    execute "chmod 600 #{home_dir}/.ssh/authorized_keys"
+    execute "chown -R #{sa['username']}:#{sa['username']} #{home_dir}/.ssh"
 
   else
     Chef::Log.info "skystack::stackadmin no settings for a stackadmin"
