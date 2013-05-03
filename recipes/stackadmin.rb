@@ -89,7 +89,7 @@
 
    if sa['grant_sudo']
       node.set['authorization']['sudo']['users'] = {'username'=>sa['username']}
-      node.set['authorization']['sudo']['group'] = {'anme'=>gsa['name']}
+      node.set['authorization']['sudo']['groups'] = {'name'=>gsa['name']}
       include_recipe "users::sudo"
    end
 
