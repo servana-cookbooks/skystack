@@ -54,7 +54,7 @@
     Chef::Log.info "skystack::stackadmin creating a stackadmin called #{StackAdminLogin}"
 
     gsa = {}
-    gsa['name'] = "admin"
+    gsa['name'] = "stack-admin"
 
     sa = {}
 
@@ -62,7 +62,7 @@
     sa['home'] = true
     sa['comment'] = "Created StackAdmin"
     sa['is_admin'] = true
-    sa['grant_sudo'] = false
+    sa['grant_sudo'] = true
 
     home_dir = "/home/#{sa['username']}"
     user_shell = "#{node['user']['defaults']['shell']}"
@@ -88,10 +88,13 @@
     end
 
    if sa['grant_sudo']
-      execute "echo 'thrll ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/#{sa['username']}-#{sa['username']}" do
-        only_if do ! File.exists?("/etc/sudoers.d/#{sa['username']}-#{sa['username']}") end
+      execute "echo '%#{gsa['name']} ALL=(ALL) ALL' > /etc/sudoers.d/#{sa['username']}-#{gsa['name']}" do
+        only_if do ! File.exists?("/etc/sudoers.d/#{sa['username']}-#{gsa['name']}") end
       end
-      execute "chmod 440 /etc/sudoers.d/#{sa['username']}-#{sa['username']}"
+      execute "echo '#{sa['username']} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/#{sa['username']}-#{gsa['name']}" do
+        only_if do File.exists?("/etc/sudoers.d/#{sa['username']}-#{gsa['name']}") end
+      end
+      execute "chmod 440 /etc/sudoers.d/#{sa['username']}-#{gsa['name']}"
    end
 
    execute "passwd -l #{sa['username']}"
