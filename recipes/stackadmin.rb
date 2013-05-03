@@ -25,7 +25,7 @@
 
   if StackAdminLogin && StackAdminHref && ApiToken && ApiUser
 
-    Chef::Log.info "skystack::stackadmin creating a stackadmin called #{ApiUser}"
+    Chef::Log.info "skystack::stackadmin creating a stackadmin called #{StackAdminLogin}"
 
     u = {}
 
