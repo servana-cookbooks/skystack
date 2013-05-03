@@ -16,26 +16,34 @@
 #
   include_recipe "users"
 
-  if File.exists?("/opt/skystack/etc/userdata.conf")
+   if File.exists?("/opt/skystack/etc/userdata.conf")
 
     File.open('/opt/skystack/etc/userdata.conf').each_line{ |s|
 
       config = s.split("=")
-     
-      if config[0] == "API_USER"
-        ApiUser = config[1]
-      end
+      key = config[0]
 
-      if config[0] == "API_TOKEN"
-        ApiToken = config[1]
-      end
+      if !config[1].nil?
+          quoted = config[1].strip
+          v = quoted.gsub(/"/,"")
+          value = v
 
-      if config[0] == "STACKADMIN_PUB"
-        StackAdminHref = config[1]
-      end
+        if config[0] == "API_USER"
+          ApiUser = value
+        end
 
-       if config[0] == "STACKADMIN_LOGIN"
-        StackAdminLogin = config[1]
+        if config[0] == "API_TOKEN"
+          ApiToken = value
+        end
+
+        if config[0] == "STACKADMIN_PUB"
+          StackAdminHref = value
+        end
+
+         if config[0] == "STACKADMIN_LOGIN"
+          StackAdminLogin = value
+        end
+
       end
     }
 
@@ -58,14 +66,6 @@
 
     home_dir = "/home/#{sa['username']}"
     user_shell = "#{node['user']['defaults']['shell']}"
-
-    directory "#{home_dir}/.ssh" do
-      owner "root"
-      group "root"
-      mode "0700"
-    end
-    
-    execute "curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref}"
 
     user "#{sa['username']}" do
       shell user_shell
@@ -94,6 +94,15 @@
    end
 
    execute "passwd -l #{sa['username']}"
+
+    directory "#{home_dir}/.ssh" do
+      owner "#{sa['username']}"
+      group "#{sa['username']}"
+      mode "0700"
+      recursive true
+    end
+    
+    execute "curl -o #{home_dir}/.ssh/authorized_keys -u #{ApiUser}:#{ApiToken} #{StackAdminHref}"
 
   else
     Chef::Log.info "skystack::stackadmin no settings for a stackadmin"
