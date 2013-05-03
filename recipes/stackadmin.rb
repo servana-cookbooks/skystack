@@ -1,3 +1,21 @@
+# Cookbook Name:: skystack
+# Recipe:: skystack::stackadmin
+# Copyright:: 2010, Skystack Limited.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+  include_recipe "users"
+
   if File.exists?("/opt/skystack/etc/userdata.conf")
 
     File.open('/opt/skystack/etc/userdata.conf').each_line{ |s|
@@ -26,6 +44,8 @@
   if StackAdminLogin && StackAdminHref && ApiToken && ApiUser
 
     Chef::Log.info "skystack::stackadmin creating a stackadmin called #{StackAdminLogin}"
+    g = {}
+    g['name'] = "sys-admin"
 
     u = {}
 
@@ -40,7 +60,7 @@
     u['comment'] = "First StackAdmin user"
     u['is_admin'] = true
     u['grant_sudo'] = true
-    
+
     if u['home']
         home_dir = "/home/#{u['username']}"
     elsif u['home_dir']
@@ -94,6 +114,8 @@
     
    if u['grant_sudo']
     node.set['authorization']['sudo']['users'] << u
+    node.set['authorization']['sudo']['group'] << g
+    include_recipe "users::sudo"
    end
 
    execute "passwd -l #{u['username']}"
