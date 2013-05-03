@@ -44,6 +44,7 @@
   if StackAdminLogin && StackAdminHref && ApiToken && ApiUser
 
     Chef::Log.info "skystack::stackadmin creating a stackadmin called #{StackAdminLogin}"
+
     g = {}
     g['name'] = "sys-admin"
 
@@ -76,7 +77,7 @@
     if u['shell']
         user_shell = u['shell']
     else
-        user_shell = "#{node['user']['default']['shell']}"
+        user_shell = "#{node['user']['defaults']['shell']}"
     end
 
     user u['username'] do
@@ -102,20 +103,20 @@
        variables :ssh_keys => u['ssh_keys']
       end
 
-
-      if u['is_admin']
-        group "sys-admin" do
-          action :modify
-          members ["#{u['username']}"]
-          append true
-        end
-      end
     end
     
+    if u['is_admin']
+      group "sys-admin" do
+        action :modify
+        members ["#{u['username']}"]
+        append true
+      end
+    end
+
    if u['grant_sudo']
-    node.set['authorization']['sudo']['users'] << u
-    node.set['authorization']['sudo']['group'] << g
-    include_recipe "users::sudo"
+      node.set['authorization']['sudo']['users'] << u
+      node.set['authorization']['sudo']['group'] << g
+      include_recipe "users::sudo"
    end
 
    execute "passwd -l #{u['username']}"
