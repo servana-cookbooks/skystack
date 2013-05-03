@@ -86,10 +86,15 @@
       supports :manage_home => "#{manage_home}"
       home "#{home_dir}"
     end
+
+    group "#{u['username']}" do
+      members "#{u['username']}"
+      append true
+    end
     
     directory "#{home_dir}/.ssh" do
-      owner u['username']
-      group u['username']
+      owner "#{u['username']}"
+      group "#{u['username']}"
       mode "0700"
     end
 
@@ -97,10 +102,10 @@
 
       template "#{home_dir}/.ssh/authorized_keys" do
        source "authorised_keys.erb"
-       owner u['username']
-       group u['username']
+       owner "#{u['username']}"
+       group "#{u['username']}"
        mode "0600"
-       variables :ssh_keys => u['ssh_keys']
+       variables :ssh_keys => "#{u['ssh_keys']}"
       end
 
     end
@@ -120,11 +125,6 @@
    end
 
    execute "passwd -l #{u['username']}"
-
-   group "#{u['username']}" do
-    members "#{u['username']}"
-    append true
-   end
 
   else
     Chef::Log.info "skystack::stackadmin no settings for a stackadmin"
