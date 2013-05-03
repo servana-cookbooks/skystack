@@ -39,6 +39,8 @@ node.set['skystack']['memory'] = size
 
 Chef::Log.info "skystack::default total memory #{node['skystack']['memory']}"
 
+  include_recipe "skystack::stackadmin"
+
 if node['scripts'] && node['scripts']['before_configure']
     node.set['scripts']['run_scripts'] = node['scripts']['before_configure']
   include_recipe "skystack::script"
