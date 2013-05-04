@@ -71,13 +71,14 @@ if site['config']['webserver'] == 'apache2'
      recursive true
    end
 
-   cookbook_file "#{site["document_root"]}/index.html" do
-    source "index.html"
-    mode 0755
-    owner "www-data"
-    group "www-data"
-    action :create_if_missing
-   end
+  #cookbook_file "#{site["document_root"]}/index.html" do
+  #  source "index.html"
+  #  mode 0755
+  # owner "www-data"
+  #  group "www-data"
+  #  action :create_if_missing
+  #  only_if do ! File.exists?("#{site["document_root"]}/index.php") end
+  # end
       
    if site['config']["enable"].nil?   
       apache_site site["server_name"] do
