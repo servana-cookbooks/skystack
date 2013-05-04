@@ -66,19 +66,19 @@ if site['config']['webserver'] == 'apache2'
    directory site["document_root"] do
      owner "www-data"
      group "www-data"
-     mode "0755"
+     mode 0755
      action :create
      recursive true
    end
 
-  #cookbook_file "#{site["document_root"]}/index.html" do
-  #  source "index.html"
-  #  mode 0755
-  # owner "www-data"
-  #  group "www-data"
-  #  action :create_if_missing
-  #  only_if do ! File.exists?("#{site["document_root"]}/index.php") end
-  # end
+  cookbook_file "#{site["document_root"]}/skystack.html" do
+    source "index.html"
+    mode 0644
+    owner "www-data"
+    group "www-data"
+    action :create_if_missing
+    only_if do ! File.exists?("#{site["document_root"]}/skystack.html") end
+   end
       
    if site['config']["enable"].nil?   
       apache_site site["server_name"] do
@@ -89,7 +89,7 @@ if site['config']['webserver'] == 'apache2'
   if ! site['directories'].nil?
     site['directories'].each do |dir|
       directory "#{dir['path']}" do
-        mode 00755
+        mode 0755
         action :create
         recursive dir['recursive']
       end
