@@ -123,3 +123,10 @@ if site['config']['webserver'] == 'apache2'
 end
 
 end
+
+Chef::Log.info "skystack::apache2_site disable default"  
+apache_site "default" do
+  enable false
+end
+
+
