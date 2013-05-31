@@ -31,13 +31,14 @@ defaults
 %>
 
 frontend <%= "#{fe['name']} *:#{port}" %>
-	acl src AF -f /opt/skystack/etc/haproxy/subnets/AF.co.subnets
-	acl src AN -f /opt/skystack/etc/haproxy/subnets/AN.co.subnets
-	acl src AS -f /opt/skystack/etc/haproxy/subnets/AS.co.subnets
-	acl src EU -f /opt/skystack/etc/haproxy/subnets/EU.co.subnets
-	acl src NA -f /opt/skystack/etc/haproxy/subnets/NA.co.subnets
-	acl src OC -f /opt/skystack/etc/haproxy/subnets/OC.co.subnets
-	acl src SA -f /opt/skystack/etc/haproxy/subnets/SA.co.subnets
+  acl AF src  -f /opt/skystack/etc/haproxy/subnets/AF.co.subnets
+  acl AN src  -f /opt/skystack/etc/haproxy/subnets/AN.co.subnets
+  acl AS src  -f /opt/skystack/etc/haproxy/subnets/AS.co.subnets
+  acl EU src -f /opt/skystack/etc/haproxy/subnets/EU.co.subnets
+  acl NA src  -f /opt/skystack/etc/haproxy/subnets/NA.co.subnets
+  acl OC src -f /opt/skystack/etc/haproxy/subnets/OC.co.subnets
+  acl SA src -f /opt/skystack/etc/haproxy/subnets/SA.co.subnets
+    
   	
     # this sets up the acl to backend mapping i.e use_backend AS if AS
   <% fe['use_backend'].each do |ub| %>
