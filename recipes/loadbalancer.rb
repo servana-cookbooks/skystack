@@ -45,7 +45,7 @@ if node['lb']['glb'] == true
 		only_if do ! File.exists?("/etc/haproxy/subnets/subnets.zip") end
 	end
 
-	execute "unzip subnets.zip" do 
+	execute "unzip -o subnets.zip" do 
 		cwd "/etc/haproxy/subnets"
 		only_if do File.exists?("/etc/haproxy/subnets/subnets.zip") end
 	end
