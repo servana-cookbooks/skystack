@@ -32,13 +32,13 @@ defaults
 
 frontend <%= "#{fe['name']} *:#{port}" %>
 
-  acl AF src  -f /opt/skystack/etc/haproxy/subnets/AF.co.subnets
-  acl AN src  -f /opt/skystack/etc/haproxy/subnets/AN.co.subnets
-  acl AS src  -f /opt/skystack/etc/haproxy/subnets/AS.co.subnets
-  acl EU src -f /opt/skystack/etc/haproxy/subnets/EU.co.subnets
-  acl NA src  -f /opt/skystack/etc/haproxy/subnets/NA.co.subnets
-  acl OC src -f /opt/skystack/etc/haproxy/subnets/OC.co.subnets
-  acl SA src -f /opt/skystack/etc/haproxy/subnets/SA.co.subnets
+  acl AF src  -f /etc/haproxy/subnets/AF.co.subnets
+  acl AN src  -f /etc/haproxy/subnets/AN.co.subnets
+  acl AS src  -f /etc/haproxy/subnets/AS.co.subnets
+  acl EU src -f /etc/haproxy/subnets/EU.co.subnets
+  acl NA src  -f /etc/haproxy/subnets/NA.co.subnets
+  acl OC src -f /etc/haproxy/subnets/OC.co.subnets
+  acl SA src -f /etc/haproxy/subnets/SA.co.subnets
     
   	
     # this sets up the acl to backend mapping i.e use_backend AS if AS
