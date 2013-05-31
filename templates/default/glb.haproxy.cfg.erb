@@ -32,10 +32,10 @@ frontend <%= "#{fe['name']} *:#{fe['port']}" %>
 	acl src SA -f /opt/skystack/etc/haproxy/subnets/SA.co.subnets
   	
     # this sets up the acl to backend mapping i.e use_backend AS if AS
-  <% @fe['use_backend'].each do |ub| %>
+  <% fe['use_backend'].each do |ub| %>
     <%= "use_backend #{ub['backend']} if #{ub['if_acl']}" %> 
   <% end %>
-    <%= "default_backend #{@fe['default_backend']}" %>
+    <%= "default_backend #{fe['default_backend']}" %>
 
 <% end %>
 
@@ -49,7 +49,7 @@ backend <%= "#{be['name']}" %>
   option httpchk
   option forwardfor
   
-  <% @be['servers'].each do |srv| %>
+  <% be['servers'].each do |srv| %>
     
     <% 
       if srv['hostname'].nil? && !srv['ip'].nil?
