@@ -42,6 +42,7 @@ if node['lb']['glb'] == true
 
 	execute "wget http://glb.skystack.com.s3.amazonaws.com/subnets.zip" do 
 		cwd "/etc/haproxy/subnets"
+		only_if do ! File.exists?("/etc/haproxy/subnets/subnets.zip") end
 	end
 
 	execute "unzip subnets.zip" do 
@@ -66,5 +67,5 @@ else
 	  mode 0644
 	  notifies :restart, "service[haproxy]"
 	end
-	
+
 end
