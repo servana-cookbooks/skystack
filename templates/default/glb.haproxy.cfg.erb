@@ -35,7 +35,7 @@ frontend <%= "#{fe['name']} *:#{fe['port']}" %>
   <% @fe['use_backend'].each do |ub| %>
     <%= "use_backend #{ub['backend']} if #{ub['if_acl']}" %> 
   <% end %>
-    <%= "default_backend #{@fe['frontend']['default_backend']}" %>
+    <%= "default_backend #{@fe['default_backend']}" %>
 
 <% end %>
 
