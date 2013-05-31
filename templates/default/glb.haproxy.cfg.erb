@@ -20,9 +20,17 @@ defaults
     clitimeout 50000
     srvtimeout 50000
 
-<% @node['lb']['frontend'].each do |fe| %>
+<% @node['lb']['frontend'].each do |fe| 
 
-frontend <%= "#{fe['name']} *:#{fe['port']}" %>
+  if fe['port'].nil?
+    port = 80
+  else
+    port = fe['port']
+  end
+
+%>
+
+frontend <%= "#{fe['name']} *:#{port}" %>
 	acl src AF -f /opt/skystack/etc/haproxy/subnets/AF.co.subnets
 	acl src AN -f /opt/skystack/etc/haproxy/subnets/AN.co.subnets
 	acl src AS -f /opt/skystack/etc/haproxy/subnets/AS.co.subnets
