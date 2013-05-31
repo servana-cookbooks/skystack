@@ -31,6 +31,7 @@ defaults
 %>
 
 frontend <%= "#{fe['name']} *:#{port}" %>
+
   acl AF src  -f /opt/skystack/etc/haproxy/subnets/AF.co.subnets
   acl AN src  -f /opt/skystack/etc/haproxy/subnets/AN.co.subnets
   acl AS src  -f /opt/skystack/etc/haproxy/subnets/AS.co.subnets
