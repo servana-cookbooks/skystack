@@ -25,8 +25,6 @@
       Options ExecCGI FollowSymLinks
   	
   	<IfModule mod_fcgid.c>
-        IdleTimeout 120
-        BusyTimeout 120
       	AddHandler fcgid-script .php
       	FCGIWrapper /usr/lib/cgi-bin/php5 .php
   	</IfModule>
