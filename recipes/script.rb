@@ -19,15 +19,15 @@
 node['scripts']['run_scripts'].each do |script|
   
   execute "run-script-#{script["filename"]}" do
-    command "/opt/skystack/tmp/#{script["filename"]}; touch /opt/skystack/tmp/executed-#{script["filename"]}"
+    command "#{node['scripts']['path']}/#{script["filename"]}; touch #{node['scripts']['path']}/executed-#{script["filename"]}"
     action :nothing
-    only_if do ! File.exists?( "/opt/skystack/tmp/executed-#{script["filename"]}" ) end
+    only_if do ! File.exists?( "#{node['scripts']['path']}/executed-#{script["filename"]}" ) end
   end
 
   execute "get-script" do 
-    command "curl -o /tmp/#{script["filename"]} -u #{node['userdata']['API_USER']}:#{node['userdata']['API_TOKEN']} #{script['href']}"
+    command "curl -o #{node['scripts']['path']}/#{script["filename"]} -u #{node['userdata']['API_USER']}:#{node['userdata']['API_TOKEN']} #{script['url']}"
     notifies :run, resources(:execute => "run-script-#{script["filename"]}")
-    creates "/opt/skystack/tmp/#{script["filename"]}"
+    creates "#{node['scripts']['path']}/#{script["filename"]}"
   end
-  
+
 end
