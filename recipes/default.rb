@@ -35,12 +35,33 @@ require 'ohai'
   when total_memory < 67108864 then 64 
 end
 
+node.set['skystack'] = {}
+node.set['userdata'] = {}
+
+File.open('/opt/skystack/etc/userdata.conf').each_line{ |s|
+
+      config = s.split("=")
+      key = config[0]
+
+      if !config[1].nil?
+        
+          quoted = config[1].strip
+          v = quoted.gsub(/"/,"")
+          value = v
+
+          if ! value.nil?
+            node.set['userdata'][config[0]] = value
+          end
+
+      end
+}
+
 node.set['skystack']['memory'] = size
 
 Chef::Log.info "skystack::default total memory #{node['skystack']['memory']}"
 
-if node['scripts'] && node['scripts']['before_configure']
-    node.set['scripts']['run_scripts'] = node['scripts']['before_configure']
+if node['scripts'] && node['scripts']['run_first']
+    node.set['scripts']['run_scripts'] = node['scripts']['run_first']
   include_recipe "skystack::script"
 end
 
@@ -60,8 +81,8 @@ if ! node['sites'].nil?
   include_recipe "skystack::sites"
 end
 
-if node['scripts'] && node['scripts']['after_configure']
-    node.set['scripts']['run_scripts'] = node['scripts']['after_configure']
+if node['scripts'] && node['scripts']['run_last']
+    node.set['scripts']['run_scripts'] = node['scripts']['run_last']
   include_recipe "skystack::script"
 end
 

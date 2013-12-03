@@ -18,38 +18,16 @@
 
 node['scripts']['run_scripts'].each do |script|
   
-
-  Chef::Log.info "skystack::script telling chef to run this script #{script["resource"]}"
-  
-  execute "run-script-#{script["resource"]}" do
-    command "/tmp/#{script["resource"]}; touch /opt/skystack/tmp/executed-#{script["resource"]}"
+  execute "run-script-#{script["filename"]}" do
+    command "/opt/skystack/tmp/#{script["filename"]}; touch /opt/skystack/tmp/executed-#{script["filename"]}"
     action :nothing
-    only_if do ! File.exists?( "/opt/skystack/tmp/executed-#{script["resource"]}" ) end
+    only_if do ! File.exists?( "/opt/skystack/tmp/executed-#{script["filename"]}" ) end
   end
 
-  #all interactions with our API should be done via a Ruby script to cleanup the execution of a SkyScript.
-  Chef::Log.info "skystack::script via skystack we fetch the script contents #{script["resource"]}"
-
-  bash "get-script" do
-    user "root"
-    cwd "/tmp"
-    code <<-EOH
-    export SKYSTACK_PATH=/opt/skystack
-    export ALIAS=`awk '/ALIAS/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-    export API_TOKEN=`awk '/API_TOKEN/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-    export API_USER=`awk '/API_USER/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-    export BASE=`awk '/BASE/ {print $2}' FS=\= $SKYSTACK_PATH/etc/userdata.conf` > /dev/null 2>&1
-
-    HTTP=https
-
-    curl -k -o /tmp/#{script["resource"]}-raw -u $API_USER:$API_TOKEN $HTTP://$BASE/$ALIAS/scripts/#{script["identifier"]}/out.bash
-
-    tr -d '\015\032' < /tmp/#{script["resource"]}-raw > /tmp/#{script["resource"]}
-
-    chmod +x /tmp/#{script["resource"]}
-
-    EOH
-    notifies :run, resources(:execute => "run-script-#{script["resource"]}")
-    creates "/tmp/#{script["resource"]}"
+  execute "get-script" do 
+    command "curl -o /tmp/#{script["filename"]} -u #{node['userdata']['API_USER']}:#{node['userdata']['API_TOKEN']} #{script['href']}"
+    notifies :run, resources(:execute => "run-script-#{script["filename"]}")
+    creates "/opt/skystack/tmp/#{script["filename"]}"
   end
+  
 end

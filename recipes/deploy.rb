@@ -15,20 +15,5 @@
 # limitations under the License.
 #
 
-
-# "deployments":[
-#      "config":
-#      {
-#          "strategy":"archive",
-#      },
-#    "name":"WKDAPP",
-#    "fetch_archive_command":"curl -L -o /opt/skystack/downloads/github_arch.zip -H 'https://api.github.com/repos/user/repo/zipball'",
-#    "archive_path":"/opt/skystack/downloads/github_arch.zip",
-#    "base_path":"/var/www/vhosts/WKDAPP.com",
-#    "deploy_path":"/var/www/vhosts/WKDAPP.com/releases",
-#    "shared_path":"/var/www/vhosts/WKDAPP.com/shared",
-#    "symlink":"/var/www/vhosts/WKDAPP.com/current"
-# ],
-
 include_recipe "skystack::deploy_archive"
 include_recipe "skystack::deploy_repo"
