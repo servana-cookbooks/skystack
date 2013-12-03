@@ -25,7 +25,7 @@ node['scripts']['run_scripts'].each do |script|
   end
 
   execute "get-script" do 
-    command "curl -o #{node['scripts']['path']}/#{script["filename"]} -u #{node['userdata']['API_USER']}:#{node['userdata']['API_TOKEN']} #{script['url']}"
+    command "curl -k -o #{node['scripts']['path']}/#{script["filename"]} -u #{node['userdata']['API_USER']}:#{node['userdata']['API_TOKEN']} #{script['url']}"
     notifies :run, resources(:execute => "run-script-#{script["filename"]}")
     creates "#{node['scripts']['path']}/#{script["filename"]}"
   end
