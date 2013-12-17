@@ -11,6 +11,19 @@
     ServerAlias <% @params[:server_aliases].each do |a| %><%= "#{a}" %> <% end %>
   <% end %>
 
+<% if @params[:aliases] %>
+    <% @params[:aliases].each do |a| %>
+      <%= "Alias #{a.name}"%> <%="\"#{a.path}\"" <% end %>
+    <% end %>
+  <% end %>
+
+  
+<Directory "/usr/share/php5/phpmyadmin/">
+    Order allow,deny
+    Allow from all
+</Directory>
+
+
   <% if @params[:ssl] == "on" %>
    #  Enable SSL
     SSLEngine On

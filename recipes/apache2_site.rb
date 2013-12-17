@@ -43,6 +43,10 @@ if site['config']['webserver'] == 'apache2'
     if site["server_aliases"]
       server_aliases site["server_aliases"]
     end
+    
+    if site["aliases"]
+      aliases site["aliases"]
+    end
 
     if site["ssl"] == "on"
      ssl "on"

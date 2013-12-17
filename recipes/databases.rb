@@ -38,6 +38,8 @@ node["databases"].each do |db|
 
    if db['phpmyadmin'] == true
     Chef::Log.info("Creating PHPMyAdmin profile for: #{db["name"]}")
+
+    include_recipe "phpmyadmin"
     
     phpmyadmin_db "#{db["name"]}" do
         host '127.0.0.1'
