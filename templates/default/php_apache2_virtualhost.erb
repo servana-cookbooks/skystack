@@ -13,15 +13,21 @@
 
 <% if @params[:aliases] %>
     <% @params[:aliases].each do |a| %>
-      <%= "Alias #{a.name}"%> <%="\"#{a.path}\"" <% end %>
+      
+      <%="Alias #{a.name}"%> <%="\"#{a.path}\"" %>
+
+      <Directory "<%="#{a.path}"%>">
+        Options ExecCGI FollowSymLinks
+        Order allow,deny
+        Allow from all
+        <IfModule mod_fcgid.c>
+          AddHandler fcgid-script .php
+          FCGIWrapper /usr/lib/cgi-bin/php5 .php
+        </IfModule>
+      </Directory>
+
     <% end %>
   <% end %>
-
-  
-<Directory "/usr/share/php5/phpmyadmin/">
-    Order allow,deny
-    Allow from all
-</Directory>
 
 
   <% if @params[:ssl] == "on" %>
