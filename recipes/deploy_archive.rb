@@ -3,7 +3,7 @@ if node['deployments']
 
   node['deployments'].each do |app|
 
-	if app['config']['strategy'] == 'archive'
+	if app['config']['strategy'] == 'archive' && app['config']['do_deploy'] == true
 
 		directory "#{app['deploy_path']}" do
 		 mode 00755
@@ -39,11 +39,11 @@ if node['deployments']
 		# lets rename current symlink to rollback
 		if ! app['rollback_path'].nil?
 			execute "mv #{app['symlink']} #{app['rollback_path']}" do 
-				only_if do File.exists?("#{app['symlink']}") end
+				only_if do File.symlink?("#{app['symlink']}") end
 			end
 		end
 
-		if File.exist?("#{app['base_path']}/current") || ! File.symlink?("#{app['base_path']}/current")
+		if ! File.symlink?("#{app['base_path']}/current")
 			
 			execute "rm -rf #{app['base_path']}/current" do
 				cwd "#{app['base_path']}"
