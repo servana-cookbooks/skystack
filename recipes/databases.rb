@@ -44,7 +44,7 @@ node["databases"].each do |db|
     phpmyadmin_db "#{db["name"]}" do
         host '127.0.0.1'
         port 3306
-        auth_type "config"
+        auth_type "cookie"
         username "#{db["user"]}"
         password "#{db["password"]}"
         hide_dbs %w{ information_schema mysql phpmyadmin performance_schema }
